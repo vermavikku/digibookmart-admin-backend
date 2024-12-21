@@ -25,164 +25,43 @@ const validateMobileNumber = (mobile) => {
 
 const userLogin = async (req, res) => {
   try {
-    const { username, password } = trim_values(req.body);
+    const { user_name, password } = trim_values(req.body);
 
-    if (!username.trim() || !password.trim()) {
+    if (!user_name.trim() || !password.trim()) {
       return res
         .status(httpStatus.NOT_FOUND)
         .json({ Message: "Username and Password Required" });
     }
 
-    const checkUser = await users.selectSingleUser(
+    const checkUser = await users.checkUserByCondition(
       {
-        user_name: username.trim(),
-        status: "Active",
-      },
-      ["user_name", "password", "user_id", "center_code", "email"]
+        user_name: user_name,
+        user_type: "admin",
+      }
     );
 
-    if (checkUser.length == 0) {
+    if (Object.keys(checkUser).length == 0) {
       return res
         .status(httpStatus.UNAUTHORIZED)
         .json({ Message: "Invalid Username or Password" });
-    }
-
-    const checkRole = await user_role.getUserRoleByUserName(username);
-
-    if (checkRole.length == 0) {
-      return res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ Message: `user ${username} doesn't have any role` });
-    }
-    let roles = [];
-    checkRole.map((element) => {
-      roles.push(element.role_type);
-    });
-
-    if (roles.includes("C")) {
-      return res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ Message: `invalid username or password` });
     }
 
     const verifyPassword = await bcrypt.verify(
-      password.trim(),
-      checkUser[0].password
-    );
-    if (!verifyPassword) {
-      return res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ Message: "Invalid Username or Password" });
-    }
-    let userData = {};
-
-    for (let i = 0; i < Object.keys(checkUser[0]).length; i++) {
-      const key = Object.keys(checkUser[0])[i];
-      if (key != "password") {
-        userData[key] = checkUser[0][key];
-      }
-    }
-
-    const token = await jwt.generateToken(userData);
-    let finalResult = { token: token };
-
-    console.log(roles[0]);
-
-    const loginDetails = [
-      username,
-      checkUser[0].email,
       password,
-      "192.168.1.1",
-      "E24",
-      token,
-      "",
-      "2024-12-13T14:00:00Z",
-      101,
-      checkUser[0].user_id,
-    ];
-
-    const addLogInDetails = await login_master.addLoginMasterData(loginDetails);
-
-    if (!addLogInDetails) {
-      return res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ Message: "unable to login" });
-    }
-
-    return res.status(httpStatus.OK).json(finalResult);
-  } catch (error) {
-    console.log(error);
-    return res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({ Message: "Internal Server Error" });
-  }
-};
-
-const adminLogin = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    if (!username.trim() || !password.trim()) {
-      return res
-        .status(httpStatus.BAD_REQUEST)
-        .json({ Message: "Username and Password Required" });
-    }
-
-    const checkUser = await users.selectSingleUser(
-      {
-        user_name: username.trim(),
-        status: "Active",
-      },
-      ["user_name", "password", "user_id", "center_code"]
-    );
-
-    if (checkUser.length == 0) {
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .json({ Message: "Invalid Username or Password" });
-    }
-
-    const checkRole = await user_role.getUserRoleByUserName(username);
-
-    if (checkRole.length == 0) {
-      return res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ Message: `user ${username} doesn't have any role` });
-    }
-    let roles = [];
-    checkRole.map((element) => {
-      roles.push(element.role_type);
-    });
-
-    if (roles.includes("E")) {
-      return res
-        .status(httpStatus.UNAUTHORIZED)
-        .json({ Message: `invalid username or password` });
-    }
-
-    const verifyPassword = await bcrypt.verify(
-      password.trim(),
-      checkUser[0].password
+      checkUser.password
     );
     if (!verifyPassword) {
       return res
-        .status(httpStatus.NOT_FOUND)
+        .status(httpStatus.UNAUTHORIZED)
         .json({ Message: "Invalid Username or Password" });
     }
-    let userData = {};
 
-    for (let i = 0; i < Object.keys(checkUser[0]).length; i++) {
-      const key = Object.keys(checkUser[0])[i];
-      if (key != "password") {
-        userData[key] = checkUser[0][key];
-      }
-    }
-
-    userData = { ...userData, role_code: "SUPERADMIN" };
+    let userData = {user_name : checkUser.user_name,user_type : checkUser.user_type};
 
     const token = await jwt.generateToken(userData);
     let finalResult = { token: token };
 
+
     return res.status(httpStatus.OK).json(finalResult);
   } catch (error) {
     console.log(error);
@@ -191,6 +70,38 @@ const adminLogin = async (req, res) => {
       .json({ Message: "Internal Server Error" });
   }
 };
+
+const registerNewUser = async(req,res)=>{
+  try {
+
+    const info = trim_values(req.body);
+
+    if(Object.keys(info).length == 0){
+      return res.status(httpStatus.BAD_REQUEST).json({Message : "please provide valid information"});
+    }
+
+    const encryptedPass = await bcrypt.encrypt(info.password);
+
+    if(!encryptedPass){
+      return res.status(httpStatus.BAD_REQUEST).json({Message : "unable to add user information"});
+    }
+
+    const added = await users.insertUser({...info,password : encryptedPass});
+
+    if(!added){
+      return res.status(httpStatus.BAD_REQUEST).json({Message : "unable to add user information"});
+    }
+
+    return res.status(httpStatus.CREATED).json({Message : "user created successfully"});
+    
+  } catch (error) {
+    console.log(error);
+    if(error.message.includes("Conflict")){
+      return res.status(httpStatus.CONFLICT).json({Message : "user with this username already exists"});
+    }
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({Message : "Internal Server Error"});
+  }
+}
 
 const verifyEmail = async (req, res) => {
   try {
@@ -294,9 +205,11 @@ const resetPassword = async (req, res) => {
   }
 };
 
+
+
 module.exports = {
   userLogin,
-  adminLogin,
   verifyEmail,
   resetPassword,
+  registerNewUser
 };

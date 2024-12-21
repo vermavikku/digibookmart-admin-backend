@@ -46,9 +46,9 @@ app.use("/v1", router);
 //   }, 1000);
 // }
 
-app.get('/test', (req, res) => {
-  res.send('Test route working');
-});
+// app.get('/test', (req, res) => {
+//   res.send('Test route working');
+// });
 
 console.log(env.port);
 

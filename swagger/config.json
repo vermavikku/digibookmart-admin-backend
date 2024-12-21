@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:4000",
+      "url": "https://digibookmart-chhkhgf0d2e5hrfg.canadacentral-01.azurewebsites.net",
       "description": "Development server"
     }
   ],

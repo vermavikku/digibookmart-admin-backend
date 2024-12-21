@@ -16,7 +16,17 @@ const insertUser = async (data) => {
 };
 
 
+const checkUserByCondition = async(condition)=>{
+  try {
+    const result = await users.findOne(condition);
+    return result;
+  } catch (error) {
+    console.log("Error inserting user:", error);
+    throw new Error(`An unexpected error occurred: ${error.message}`);
+  }
+}
 
 module.exports = {
   insertUser,
+  checkUserByCondition
 };
