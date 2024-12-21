@@ -46,7 +46,14 @@ app.use("/v1", router);
 //   }, 1000);
 // }
 
-const PORT = env.port;
+app.get('/test', (req, res) => {
+  res.send('Test route working');
+});
+
+console.log(env.port);
+
+
+const PORT =env.port;
 
 server.listen(PORT, () => {
   console.log(`Server Running On Port Number ${PORT}`);

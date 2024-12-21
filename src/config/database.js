@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const dotenv = require("dotenv");
 
 // Connection URI
-const uri = 'mongodb://0.0.0.0:27017/digibookmart'; // Adjust the URI and database name based on your MongoDB setup
+const uri = process.env.DB_URI; // Adjust the URI and database name based on your MongoDB setup
 
 // Connect to MongoDB
 mongoose.connect(uri);
