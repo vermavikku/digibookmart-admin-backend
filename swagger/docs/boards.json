@@ -1,0 +1,178 @@
+{
+    "tags": [
+      {
+        "name": "boards",
+        "description": "Operations related to boards"
+      }
+    ],
+    "paths": {
+      "/v1/board/add": {
+        "post": {
+          "tags": ["boards"],
+          "summary": "Add new board info",
+          "responses": {
+            "201": {
+              "description": "board created successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "409": {
+              "description": "Duplicate Entry"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "requestBody": {
+            "required": true,
+            "content": {
+            "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "board_name": {
+                      "type": "string",
+                      "example": "Maharashtra"
+                    },
+                    "board_code": {
+                      "type": "string",
+                      "example": "MH"
+                    }
+                  },
+                  "required": [
+                    "board_name",
+                    "board_code"
+                   ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "/v1/board": {
+          "get": {
+            "tags": ["boards"],
+            "summary": "get All board info",
+            "responses": {
+              "200": {
+                "description": "board gets successfully"
+              },
+              "400": {
+                "description": "Bad Request"
+              },
+              "404": {
+                "description": "Not Found"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+      },
+      "/v1/board/{board_code}": {
+          "get": {
+            "tags": ["boards"],
+            "summary": "get existing board info by valid board code",
+            "parameters" :[
+              {
+                  "name" : "board_code",
+                  "in" : "path",
+                  "required" : true
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "board gets successfully"
+              },
+              "400": {
+                "description": "Bad Request"
+              },
+              "404": {
+                "description": "Not Found"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+      },
+      "/v1/board/update/{board_code}": {
+          "put": {
+            "tags": ["boards"],
+            "summary": "update existing board info by valid board code",
+            "parameters" :[
+              {
+                  "name" : "board_code",
+                  "in" : "path",
+                  "required" : true
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "board created successfully"
+              },
+              "400": {
+                "description": "Bad Request"
+              },
+              "404": {
+                "description": "Not Found"
+              },
+              "409": {
+                "description": "Duplicate Entry"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            },
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "board_name": {
+                        "type": "string",
+                        "example": "Maharashtra"
+                      }
+                    },
+                    "required": [
+                      "board_name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+      },
+      "/v1/board/delete/{board_code}": {
+          "delete": {
+            "tags": ["boards"],
+            "summary": "delete existing board info by valid board code",
+            "parameters" :[
+              {
+                  "name" : "board_code",
+                  "in" : "path",
+                  "required" : true
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "board deleted successfully"
+              },
+              "400": {
+                "description": "Bad Request"
+              },
+              "404": {
+                "description": "Not Found"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+      }
+    }
+  }
+  

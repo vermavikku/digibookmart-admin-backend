@@ -1,0 +1,178 @@
+{
+    "tags": [
+      {
+        "name": "mediums",
+        "description": "Operations related to mediums"
+      }
+    ],
+    "paths": {
+      "/v1/medium/add": {
+        "post": {
+          "tags": ["mediums"],
+          "summary": "Add new medium info",
+          "responses": {
+            "201": {
+              "description": "medium created successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "409": {
+              "description": "Duplicate Entry"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "requestBody": {
+            "required": true,
+            "content": {
+            "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "medium_name": {
+                      "type": "string",
+                      "example": "English"
+                    },
+                    "medium_code": {
+                      "type": "string",
+                      "example": "E"
+                    }
+                  },
+                  "required": [
+                    "medium_name",
+                    "medium_code"
+                   ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "/v1/medium": {
+          "get": {
+            "tags": ["mediums"],
+            "summary": "get All medium info",
+            "responses": {
+              "200": {
+                "description": "medium gets successfully"
+              },
+              "400": {
+                "description": "Bad Request"
+              },
+              "404": {
+                "description": "Not Found"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+      },
+      "/v1/medium/{medium_code}": {
+          "get": {
+            "tags": ["mediums"],
+            "summary": "get existing medium info by valid medium code",
+            "parameters" :[
+              {
+                  "name" : "medium_code",
+                  "in" : "path",
+                  "required" : true
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "medium gets successfully"
+              },
+              "400": {
+                "description": "Bad Request"
+              },
+              "404": {
+                "description": "Not Found"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+      },
+      "/v1/medium/update/{medium_code}": {
+          "put": {
+            "tags": ["mediums"],
+            "summary": "update existing medium info by valid medium code",
+            "parameters" :[
+              {
+                  "name" : "medium_code",
+                  "in" : "path",
+                  "required" : true
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "medium created successfully"
+              },
+              "400": {
+                "description": "Bad Request"
+              },
+              "404": {
+                "description": "Not Found"
+              },
+              "409": {
+                "description": "Duplicate Entry"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            },
+            "requestBody": {
+              "required": true,
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "medium_name": {
+                        "type": "string",
+                        "example": "English"
+                      }
+                    },
+                    "required": [
+                      "medium_name"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+      },
+      "/v1/medium/delete/{medium_code}": {
+          "delete": {
+            "tags": ["mediums"],
+            "summary": "delete existing medium info by valid medium code",
+            "parameters" :[
+              {
+                  "name" : "medium_code",
+                  "in" : "path",
+                  "required" : true
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "medium deleted successfully"
+              },
+              "400": {
+                "description": "Bad Request"
+              },
+              "404": {
+                "description": "Not Found"
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+      }
+    }
+  }
+  
