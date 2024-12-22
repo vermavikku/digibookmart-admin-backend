@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const { evaluation } = require("../models");
+
 const encrypt = async (data) => {
   try {
     const saltRounds = 10; // Number of salt rounds (cost factor)

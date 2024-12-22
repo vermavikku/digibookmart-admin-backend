@@ -1,0 +1,188 @@
+{
+  "tags": [
+    {
+      "name": "categories",
+      "description": "Operations related to categories"
+    }
+  ],
+  "paths": {
+    "/v1/category/add": {
+      "post": {
+        "tags": ["categories"],
+        "summary": "Add new category info with a thumbnail",
+        "responses": {
+          "201": {
+            "description": "Category created successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Duplicate Entry"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category_name": {
+                    "type": "string",
+                    "example": "Text BOOK"
+                  },
+                  "category_code": {
+                    "type": "string",
+                    "example": "TB"
+                  },
+                  "category_thumbnail": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The thumbnail image file for the category"
+                  }
+                },
+                "required": [
+                  "category_name",
+                  "category_code",
+                  "category_thumbnail"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/category": {
+        "get": {
+          "tags": ["categories"],
+          "summary": "get All category info",
+          "responses": {
+            "200": {
+              "description": "Category gets successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+    },
+    "/v1/category/{category_code}": {
+        "get": {
+          "tags": ["categories"],
+          "summary": "get existing category info by valid category code",
+          "parameters" :[
+            {
+                "name" : "category_code",
+                "in" : "path",
+                "required" : true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Category gets successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+    },
+    "/v1/category/update/{category_code}": {
+        "put": {
+          "tags": ["categories"],
+          "summary": "update existing category info by valid category code",
+          "parameters" :[
+            {
+                "name" : "category_code",
+                "in" : "path",
+                "required" : true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Category created successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            },
+            "409": {
+              "description": "Duplicate Entry"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "category_name": {
+                      "type": "string",
+                      "example": "Text BOOK"
+                    },
+                    "category_thumbnail": {
+                      "type": "string",
+                      "format": "binary",
+                      "description": "The thumbnail image file for the category"
+                    }
+                  },
+                  "required": [
+                    "category_name"
+                  ]
+                }
+              }
+            }
+          }
+        }
+    },
+    "/v1/category/delete/{category_code}": {
+        "delete": {
+          "tags": ["categories"],
+          "summary": "delete existing category info by valid category code",
+          "parameters" :[
+            {
+                "name" : "category_code",
+                "in" : "path",
+                "required" : true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Category deleted successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+    }
+  }
+}

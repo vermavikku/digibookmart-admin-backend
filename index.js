@@ -50,8 +50,6 @@ app.use("/v1", router);
 //   res.send('Test route working');
 // });
 
-console.log(env.port);
-
 
 const PORT =env.port;
 

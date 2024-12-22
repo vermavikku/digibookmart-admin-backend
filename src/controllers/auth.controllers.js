@@ -40,7 +40,7 @@ const userLogin = async (req, res) => {
       }
     );
 
-    if (Object.keys(checkUser).length == 0) {
+    if (!checkUser) {
       return res
         .status(httpStatus.UNAUTHORIZED)
         .json({ Message: "Invalid Username or Password" });
@@ -64,7 +64,7 @@ const userLogin = async (req, res) => {
 
     return res.status(httpStatus.OK).json(finalResult);
   } catch (error) {
-    console.log(error);
+    console.log(error,"vikas");
     return res
       .status(httpStatus.INTERNAL_SERVER_ERROR)
       .json({ Message: "Internal Server Error" });
@@ -103,73 +103,11 @@ const registerNewUser = async(req,res)=>{
   }
 }
 
-const verifyEmail = async (req, res) => {
-  try {
-    const { email } = req.body;
-
-    if (!validateEmail(email)) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        Message: "please enter valid email",
-      });
-    }
-    const checkEmail = await emailExist(email);
-    if (!checkEmail) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        Message: "please enter working email",
-      });
-    }
-
-    if (!email.trim()) {
-      return res
-        .status(httpStatus.BAD_REQUEST)
-        .json({ Message: "Username Required" });
-    }
-
-    const checkUser = await users.selectSingleUser(
-      {
-        email: email.trim(),
-        status: "Active",
-      },
-      ["name"]
-    );
-    if (checkUser.length == 0) {
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .json({ Message: "Invalid Email" });
-    }
-    const sedMail = await otpService.sendOTP(email, checkUser[0]);
-
-    if (sedMail) {
-      return res
-        .status(httpStatus.OK)
-        .json({ Message: `OTP successfully sent to ${email} this mail` });
-    } else {
-      return res
-        .status(httpStatus.BAD_REQUEST)
-        .json({ Message: `Unable to Send Mail` });
-    }
-  } catch (error) {
-    console.log(error);
-    return res
-      .status(httpStatus.INTERNAL_SERVER_ERROR)
-      .json({ Message: "Internal Server Error" });
-  }
-};
 
 const resetPassword = async (req, res) => {
   try {
-    const { password, email, otp } = req.body;
+    const { password, user_name } = trim_values(req.body);
 
-    if (!validateEmail(email)) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        Message: "please enter valid email",
-      });
-    }
-    if (!emailExist(email)) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        Message: "please enter working email",
-      });
-    }
     if (!validatePassword(password)) {
       return res.status(httpStatus.BAD_REQUEST).json({
         Message: `Invalid password. Password must be 8-20 characters long and include at least one uppercase letter,
@@ -177,18 +115,29 @@ const resetPassword = async (req, res) => {
            one digit, and one special character (@,!,#,%,&,*)`,
       });
     }
-    const isValid = await otpService.verifyOTP(email, otp);
-    if (!isValid) {
-      return res.status(httpStatus.BAD_REQUEST).json({
-        Message: "invalid otp ! please enter valid otp",
-      });
-    }
-    const newPassword = await bcrypt.encrypt(password);
-    const resetPass = await users.updateUsers(
-      { password: newPassword },
-      { email: email }
+
+    const checkUser = await users.checkUserByCondition(
+      {
+        user_name: user_name,
+        user_type: "admin",
+      }
     );
-    if (resetPass > 0) {
+
+    if (!checkUser) {
+      return res
+        .status(httpStatus.UNAUTHORIZED)
+        .json({ Message: "Invalid Username" });
+    }
+
+    const newPassword = await bcrypt.encrypt(password);
+
+    const resetPass = await users.updateUserByCondition(
+      { user_name: user_name },
+      { password: newPassword}
+    );
+    console.log(resetPass);
+    
+    if (resetPass) {
       return res.status(httpStatus.OK).json({
         Message: "password reset successfully",
       });
@@ -209,7 +158,6 @@ const resetPassword = async (req, res) => {
 
 module.exports = {
   userLogin,
-  verifyEmail,
   resetPassword,
   registerNewUser
 };

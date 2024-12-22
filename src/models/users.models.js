@@ -15,7 +15,6 @@ const insertUser = async (data) => {
   }
 };
 
-
 const checkUserByCondition = async(condition)=>{
   try {
     const result = await users.findOne(condition);
@@ -26,7 +25,19 @@ const checkUserByCondition = async(condition)=>{
   }
 }
 
+const updateUserByCondition = async(data,condition)=>{
+  try {
+    console.log(data,condition);
+    const result = await users.updateOne(condition,{$set : data});
+    return result;
+  } catch (error) {
+    console.log("Error inserting user:", error);
+    throw new Error(`An unexpected error occurred: ${error.message}`);
+  }
+}
+
 module.exports = {
   insertUser,
-  checkUserByCondition
+  checkUserByCondition,
+  updateUserByCondition
 };
