@@ -5,6 +5,7 @@ const auth = require("./docs/auth.json");
 const category = require("./docs/categories.json");
 const board = require("./docs/boards.json");
 const medium = require("./docs/mediums.json");
+const product = require("./docs/products.json");
 
 // Merge paths from each JSON file
 Object.assign(
@@ -13,6 +14,7 @@ Object.assign(
   category.paths,
   board.paths,
   medium.paths,
+  product.paths,
 );
 
 // Merge tags from each JSON file
@@ -22,6 +24,7 @@ config.tags = [
   ...(category.tags || []),
   ...(board.tags || []),
   ...(medium.tags || []),
+  ...(product.tags || []),
 ];
 
 const options = {

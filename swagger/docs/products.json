@@ -1,0 +1,227 @@
+{
+    "tags": [
+      {
+        "name": "products",
+        "description": "Operations related to products"
+      }
+    ],
+    "paths": {
+      "/v1/product/add": {
+        "post": {
+          "tags": ["products"],
+          "summary": "Add new product info with a thumbnail",
+          "responses": {
+            "201": {
+              "description": "Product created successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "409": {
+              "description": "Duplicate Entry"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "product_title": {
+                      "type": "string",
+                      "example": "Introduction to Physics"
+                    },
+                    "product_description": {
+                      "type": "string",
+                      "example": "A beginner's guide to understanding physics concepts."
+                    },
+                    "product_category": {
+                      "type": "string",
+                      "example": "Science"
+                    },
+                    "product_medium": {
+                      "type": "string",
+                      "example": "English"
+                    },
+                    "product_board": {
+                      "type": "string",
+                      "example": "CBSE"
+                    },
+                    "product_quantity": {
+                      "type": "number",
+                      "example": 100
+                    },
+                    "product_thumbnail": {
+                      "type": "string",
+                      "format": "binary",
+                      "description": "The thumbnail image file for the product"
+                    }
+                  },
+                  "required": [
+                    "product_title",
+                    "product_description",
+                    "product_category",
+                    "product_medium",
+                    "product_board",
+                    "product_quantity",
+                    "product_thumbnail"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "/v1/product": {
+        "get": {
+          "tags": ["products"],
+          "summary": "Get all product info",
+          "responses": {
+            "200": {
+              "description": "Products fetched successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/v1/product/{product_id}": {
+        "get": {
+          "tags": ["products"],
+          "summary": "Get existing product info by valid product ID",
+          "parameters": [
+            {
+              "name": "product_id",
+              "in": "path",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product fetched successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+      "/v1/product/update/{product_id}": {
+        "put": {
+          "tags": ["products"],
+          "summary": "Update existing product info by valid product ID",
+          "parameters": [
+            {
+              "name": "product_id",
+              "in": "path",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product updated successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            },
+            "409": {
+              "description": "Duplicate Entry"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          },
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "product_title": {
+                      "type": "string",
+                      "example": "Updated Physics Guide"
+                    },
+                    "product_description": {
+                      "type": "string",
+                      "example": "An updated guide to physics concepts."
+                    },
+                    "product_category": {
+                      "type": "string",
+                      "example": "Science"
+                    },
+                    "product_medium": {
+                      "type": "string",
+                      "example": "English"
+                    },
+                    "product_board": {
+                      "type": "string",
+                      "example": "CBSE"
+                    },
+                    "product_quantity": {
+                      "type": "number",
+                      "example": 150
+                    },
+                    "product_thumbnail": {
+                      "type": "string",
+                      "format": "binary",
+                      "description": "The updated thumbnail image file for the product"
+                    }
+                  },
+                  "required": ["product_title"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "/v1/product/delete/{product_id}": {
+        "delete": {
+          "tags": ["products"],
+          "summary": "Delete existing product info by valid product ID",
+          "parameters": [
+            {
+              "name": "product_id",
+              "in": "path",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product deleted successfully"
+            },
+            "400": {
+              "description": "Bad Request"
+            },
+            "404": {
+              "description": "Not Found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      }
+    }
+  }
+  
